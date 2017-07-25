@@ -1,0 +1,456 @@
+
+# 1 "mcc_generated_files/Thermo5Drivers/Thermo5.c"
+
+# 13 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\stdint.h"
+typedef signed char int8_t;
+
+# 20
+typedef signed int int16_t;
+
+# 38
+typedef signed long int int32_t;
+
+# 45
+typedef unsigned char uint8_t;
+
+# 51
+typedef unsigned int uint16_t;
+
+# 67
+typedef unsigned long int uint32_t;
+
+# 75
+typedef signed char int_least8_t;
+
+# 82
+typedef signed int int_least16_t;
+
+# 104
+typedef signed long int int_least32_t;
+
+# 111
+typedef unsigned char uint_least8_t;
+
+# 117
+typedef unsigned int uint_least16_t;
+
+# 136
+typedef unsigned long int uint_least32_t;
+
+# 145
+typedef signed char int_fast8_t;
+
+# 152
+typedef signed int int_fast16_t;
+
+# 174
+typedef signed long int int_fast32_t;
+
+# 181
+typedef unsigned char uint_fast8_t;
+
+# 187
+typedef unsigned int uint_fast16_t;
+
+# 206
+typedef unsigned long int uint_fast32_t;
+
+# 212
+typedef int32_t intmax_t;
+
+
+
+
+typedef uint32_t uintmax_t;
+
+
+
+
+typedef int16_t intptr_t;
+
+
+
+
+typedef uint16_t uintptr_t;
+
+# 12 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\stdbool.h"
+typedef unsigned char bool;
+
+# 29 "mcc_generated_files/Thermo5Drivers/Thermo5.h"
+struct AlertRegister {
+bool triggered;
+bool internal;
+bool diode_1;
+bool diode_2;
+bool diode_3;
+};
+
+struct Interrupts {
+bool busy;
+struct AlertRegister high_limit;
+struct AlertRegister low_limit;
+struct AlertRegister therm_limit;
+struct AlertRegister fault;
+};
+
+enum diodes {INTERNAL_DIODE, DIODE_1, DIODE_2, DIODE_3};
+
+float Thermo5_ReadTemperature(uint8_t sensor);
+
+void Thermo5_SetHighLimit(uint8_t sensor, int limit);
+void Thermo5_SetLowLimit(uint8_t sensor, int limit);
+void Thermo5_SetThermLimit(uint8_t sensor, int limit);
+
+void Thermo5_SetIdeality(uint8_t sensor, uint8_t ideality);
+void Thermo5_SetBeta(uint8_t sensor, uint8_t beta);
+void Thermo5_SetHysteresis(uint8_t hysteresis);
+
+void Thermo5_Initialize();
+
+void Thermo5_SetInterruptHandler(void* vector);
+void Thermo5_ISR();
+
+# 4 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\__size_t.h"
+typedef unsigned size_t;
+
+# 7 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\stdarg.h"
+typedef void * va_list[1];
+
+#pragma intrinsic(__va_start)
+extern void * __va_start(void);
+
+#pragma intrinsic(__va_arg)
+extern void * __va_arg(void *, ...);
+
+# 43 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\stdio.h"
+struct __prbuf
+{
+char * ptr;
+void (* func)(char);
+};
+
+# 29 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\errno.h"
+extern int errno;
+
+# 12 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\conio.h"
+extern void init_uart(void);
+
+extern char getch(void);
+extern char getche(void);
+extern void putch(char);
+extern void ungetch(char);
+
+extern __bit kbhit(void);
+
+# 23
+extern char * cgets(char *);
+extern void cputs(const char *);
+
+# 88 "C:\Program Files (x86)\Microchip\xc8\v1.42\include\stdio.h"
+extern int cprintf(char *, ...);
+#pragma printf_check(cprintf)
+
+
+
+extern int _doprnt(struct __prbuf *, const register char *, register va_list);
+
+
+# 180
+#pragma printf_check(vprintf) const
+#pragma printf_check(vsprintf) const
+
+extern char * gets(char *);
+extern int puts(const char *);
+extern int scanf(const char *, ...) __attribute__((unsupported("scanf() is not supported by this compiler")));
+extern int sscanf(const char *, const char *, ...) __attribute__((unsupported("sscanf() is not supported by this compiler")));
+extern int vprintf(const char *, va_list) __attribute__((unsupported("vprintf() is not supported by this compiler")));
+extern int vsprintf(char *, const char *, va_list) __attribute__((unsupported("vsprintf() is not supported by this compiler")));
+extern int vscanf(const char *, va_list ap) __attribute__((unsupported("vscanf() is not supported by this compiler")));
+extern int vsscanf(const char *, const char *, va_list) __attribute__((unsupported("vsscanf() is not supported by this compiler")));
+
+#pragma printf_check(printf) const
+#pragma printf_check(sprintf) const
+extern int sprintf(char *, const char *, ...);
+extern int printf(const char *, ...);
+
+# 29 "mcc_generated_files/Thermo5Drivers/../drivers/i2c_types.h"
+typedef enum {
+I2C_NOERR,
+I2C_BUSY,
+I2C_FAIL
+
+
+} i2c_error_t;
+
+typedef enum
+{
+i2c_stop=1,
+i2c_restart_read,
+i2c_restart_write,
+i2c_continue,
+i2c_reset_link
+} i2c_operations_t;
+
+typedef i2c_operations_t (*i2c_callback)(void *p);
+
+typedef uint8_t i2c_address_t;
+
+
+i2c_operations_t i2c_returnStop(void *p);
+i2c_operations_t i2c_returnReset(void *p);
+i2c_operations_t i2c_restartWrite(void *p);
+i2c_operations_t i2c_restartRead(void *p);
+
+# 29 "mcc_generated_files/Thermo5Drivers/../drivers/i2c_simple_master.h"
+uint8_t i2c_read1ByteRegister(i2c_address_t address, uint8_t reg);
+uint16_t i2c_read2ByteRegister(i2c_address_t address, uint8_t reg);
+void i2c_write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+void i2c_write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+
+void i2c_writeNBytes(i2c_address_t address, void* data, size_t len);
+void i2c_readDataBlock(i2c_address_t address, uint8_t reg, void *data, size_t len);
+void i2c_readNBytes(i2c_address_t address, void *data, size_t len);
+
+# 81 "mcc_generated_files/Thermo5Drivers/Thermo5.c"
+void (*Thermo5_InterruptHandler)(struct Interrupts);
+
+uint8_t Read_Thermo_Register(uint8_t addr) {
+uint8_t data = i2c_read1ByteRegister(0b1001100, addr);
+return data;
+}
+
+void Write_Thermo_Register(uint8_t addr, uint8_t val) {
+i2c_write1ByteRegister(0b1001100, addr, val);
+}
+
+float Thermo5_ReadTemperature(uint8_t sensor) {
+uint16_t dataH, dataL;
+switch (sensor) {
+case INTERNAL_DIODE:
+dataH = Read_Thermo_Register(0x00);
+dataL = Read_Thermo_Register(0x29);
+break;
+case DIODE_1:
+dataH = Read_Thermo_Register(0x01);
+dataL = Read_Thermo_Register(0x10);
+break;
+case DIODE_2:
+dataH = Read_Thermo_Register(0x23);
+dataL = Read_Thermo_Register(0x24);
+break;
+case DIODE_3:
+dataH = Read_Thermo_Register(0x2A);
+dataL = Read_Thermo_Register(0x2B);
+break;
+}
+float temp = (float) ((dataH << 3) + (dataL >> 5));
+temp /= 8;
+return temp;
+}
+
+void Thermo5_SetHighLimit(uint8_t sensor, int limit) {
+if (limit > 191) {
+limit = 191;
+} else if (limit < 0) {
+limit = 0;
+}
+
+
+uint8_t dat = (uint8_t) limit;
+
+switch (sensor) {
+case INTERNAL_DIODE:
+Write_Thermo_Register(0x05, dat);
+break;
+case DIODE_1:
+Write_Thermo_Register(0x07, dat);
+break;
+case DIODE_2:
+Write_Thermo_Register(0x15, dat);
+break;
+case DIODE_3:
+Write_Thermo_Register(0x2C, dat);
+break;
+}
+
+}
+
+void Thermo5_SetLowLimit(uint8_t sensor, int limit) {
+if (limit > 191) {
+limit = 191;
+} else if (limit < 0) {
+limit = 0;
+}
+
+
+uint8_t dat = (uint8_t) limit;
+
+switch (sensor) {
+case INTERNAL_DIODE:
+Write_Thermo_Register(0x06, dat);
+break;
+case DIODE_1:
+Write_Thermo_Register(0x08, dat);
+break;
+case DIODE_2:
+Write_Thermo_Register(0x16, dat);
+break;
+case DIODE_3:
+Write_Thermo_Register(0x2D, dat);
+break;
+}
+}
+
+void Thermo5_SetIdeality(uint8_t sensor, uint8_t ideality) {
+switch (sensor) {
+case DIODE_1:
+Write_Thermo_Register(0x27, ideality);
+break;
+case DIODE_2:
+Write_Thermo_Register(0x28, ideality);
+break;
+case DIODE_3:
+Write_Thermo_Register(0x31, ideality);
+break;
+}
+}
+
+void Thermo5_SetBeta(uint8_t sensor, uint8_t beta) {
+switch (sensor) {
+case DIODE_1:
+Write_Thermo_Register(0x25, beta);
+break;
+case DIODE_2:
+Write_Thermo_Register(0x26, beta);
+break;
+}
+}
+
+void Thermo5_SetHysteresis(uint8_t hysteresis) {
+Write_Thermo_Register(0x21, hysteresis);
+}
+
+void Thermo5_SetThermLimit(uint8_t sensor, int limit) {
+if (limit > 191) {
+limit = 191;
+} else if (limit < 0) {
+limit = 0;
+}
+
+
+uint8_t dat = (uint8_t) limit;
+
+switch (sensor) {
+case INTERNAL_DIODE:
+Write_Thermo_Register(0x20, dat);
+break;
+case DIODE_1:
+Write_Thermo_Register(0x19, dat);
+break;
+case DIODE_2:
+Write_Thermo_Register(0x1A, dat);
+break;
+case DIODE_3:
+Write_Thermo_Register(0x30, dat);
+break;
+}
+}
+
+void Thermo5_Initialize() {
+Write_Thermo_Register(0x03, 0b00000001);
+Write_Thermo_Register(0x1F, 0b1110);
+Thermo5_SetHysteresis(0);
+}
+
+void Thermo5_SetInterruptHandler(void* vector) {
+Thermo5_InterruptHandler = vector;
+}
+
+struct AlertRegister getAlertRegister(uint8_t addr) {
+struct AlertRegister WorkingRegister;
+
+uint8_t dat = Read_Thermo_Register(addr);
+
+WorkingRegister.triggered = 1;
+
+if (dat & 0b1) {
+WorkingRegister.internal = 1;
+} else {
+WorkingRegister.internal = 0;
+}
+
+if (dat & 0b10) {
+WorkingRegister.diode_1 = 1;
+} else {
+WorkingRegister.diode_1 = 0;
+}
+
+if (dat & 0b100) {
+WorkingRegister.diode_2 = 1;
+} else {
+WorkingRegister.diode_2 = 0;
+}
+
+if (dat & 0b1000) {
+WorkingRegister.diode_3 = 1;
+} else {
+WorkingRegister.diode_3 = 0;
+}
+
+return WorkingRegister;
+}
+
+void Thermo5_ISR() {
+struct Interrupts status;
+
+uint8_t stat = Read_Thermo_Register(0x02);
+
+if (stat & 1 << 2) {
+uint8_t dat = Read_Thermo_Register(0x1B);
+status.fault = getAlertRegister(dat);
+} else {
+status.fault.triggered = 0;
+status.fault.internal = 0;
+status.fault.diode_1 = 0;
+status.fault.diode_2 = 0;
+status.fault.diode_3 = 0;
+}
+
+if (stat & 1 << 4) {
+status.high_limit = getAlertRegister(0x35);
+} else {
+status.high_limit.triggered = 0;
+status.high_limit.internal = 0;
+status.high_limit.diode_1 = 0;
+status.high_limit.diode_2 = 0;
+status.high_limit.diode_3 = 0;
+}
+
+if (stat & 1 << 3) {
+status.low_limit = getAlertRegister(0x36);
+} else {
+status.low_limit.triggered = 0;
+status.low_limit.internal = 0;
+status.low_limit.diode_1 = 0;
+status.low_limit.diode_2 = 0;
+status.low_limit.diode_3 = 0;
+}
+
+if (stat & 1 << 1) {
+status.therm_limit = getAlertRegister(0x37);
+} else {
+status.therm_limit.triggered = 0;
+status.therm_limit.internal = 0;
+status.therm_limit.diode_1 = 0;
+status.therm_limit.diode_2 = 0;
+status.therm_limit.diode_3 = 0;
+}
+
+if (stat & 1 << 7) {
+status.busy = 1;
+} else {
+status.busy = 0;
+}
+
+Thermo5_InterruptHandler(status);
+}
